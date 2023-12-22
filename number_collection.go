@@ -16,18 +16,15 @@ func (n NumberCollection[T]) All() []any {
 }
 
 func (n NumberCollection[T]) IsEmpty() bool {
-	//TODO implement me
-	panic("implement me")
+	return len(n.value) == 0
 }
 
 func (n NumberCollection[T]) IsNotEmpty() bool {
-	//TODO implement me
-	panic("implement me")
+	return len(n.value) > 0
 }
 
 func (n NumberCollection[T]) Len() int {
-	//TODO implement me
-	panic("implement me")
+	return len(n.value)
 }
 
 func (n NumberCollection[T]) Clear() Collection {
@@ -71,8 +68,10 @@ func (n NumberCollection[T]) Last() any {
 }
 
 func (n NumberCollection[T]) Get(i int) any {
-	//TODO implement me
-	panic("implement me")
+	if i >= len(n.value) || len(n.value) == 0 {
+		return nil
+	}
+	return n.value[i].value
 }
 
 func (n NumberCollection[T]) Swap(i int, i2 int) Collection {
@@ -117,6 +116,7 @@ func (n NumberCollection[T]) SplitInclusive(f func()) Split {
 
 func (n NumberCollection[T]) Avg(key ...string) any {
 	var sum Number[T]
+
 	for _, num := range n.value {
 		sum.value = sum.Add(num.value)
 	}
@@ -126,18 +126,42 @@ func (n NumberCollection[T]) Avg(key ...string) any {
 
 func (n NumberCollection[T]) Sum(key ...string) any {
 	var sum Number[T]
+
 	for _, num := range n.value {
 		sum.value = sum.Add(num.value)
 	}
+
 	return sum.value
 }
 
 func (n NumberCollection[T]) Min(key ...string) any {
-	//TODO implement me
-	panic("implement me")
+	var smallest Number[T]
+
+	for i, num := range n.value {
+		if i == 0 {
+			smallest = NewNumber(num.value)
+			continue
+		}
+		if smallest.GreaterThan(num.value) {
+			smallest = NewNumber(num.value)
+		}
+	}
+
+	return smallest.value
 }
 
 func (n NumberCollection[T]) Max(key ...string) any {
-	//TODO implement me
-	panic("implement me")
+	var greatest Number[T]
+
+	for i, num := range n.value {
+		if i == 0 {
+			greatest = NewNumber(num.value)
+			continue
+		}
+		if greatest.LessThan(num.value) {
+			greatest = NewNumber(num.value)
+		}
+	}
+
+	return greatest.value
 }

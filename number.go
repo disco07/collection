@@ -38,6 +38,14 @@ func (n *Number[T]) Div(other T) T {
 	return div(n.value, other)
 }
 
+func (n *Number[T]) GreaterThan(other T) bool {
+	return n.value > other
+}
+
+func (n *Number[T]) LessThan(other T) bool {
+	return n.value < other
+}
+
 func add[T Num](a, b T) T {
 	return a + b
 }
