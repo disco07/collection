@@ -2,7 +2,6 @@ package collections
 
 type NumberCollection[T Num] struct {
 	value []Number[T]
-	MainCollection
 }
 
 func (n NumberCollection[T]) Value() any {
@@ -27,22 +26,33 @@ func (n NumberCollection[T]) Len() int {
 	return len(n.value)
 }
 
-func (n NumberCollection[T]) Clear() Collection {
+func (n NumberCollection[T]) Clear() Collection[T] {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) Dedup() Collection {
+func (n NumberCollection[T]) Dedup() Collection[T] {
+	if len(n.value) == 0 {
+		return n
+	}
+
+	j := 0
+	for i := 1; i < len(n.value); i++ {
+		if n.value[j].value != n.value[i].value {
+			j++
+			n.value[j] = n.value[i]
+		}
+	}
+	n.value = n.value[:j+1]
+	return n
+}
+
+func (n NumberCollection[T]) ExtractIf(fn func()) Collection[T] {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) ExtractIf(fn func()) Collection {
-	//TODO implement me
-	panic("implement me")
-}
-
-func (n NumberCollection[T]) Flatten() Collection {
+func (n NumberCollection[T]) Flatten() Collection[T] {
 	//TODO implement me
 	panic("implement me")
 }
@@ -52,12 +62,12 @@ func (n NumberCollection[T]) First() any {
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) SplitFirst() (any, Collection) {
+func (n NumberCollection[T]) SplitFirst() (any, Collection[T]) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) SplitLast() (any, Collection) {
+func (n NumberCollection[T]) SplitLast() (any, Collection[T]) {
 	//TODO implement me
 	panic("implement me")
 }
@@ -74,12 +84,12 @@ func (n NumberCollection[T]) Get(i int) any {
 	return n.value[i].value
 }
 
-func (n NumberCollection[T]) Swap(i int, i2 int) Collection {
+func (n NumberCollection[T]) Swap(i int, i2 int) Collection[T] {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) Reverse() Collection {
+func (n NumberCollection[T]) Reverse() Collection[T] {
 	//TODO implement me
 	panic("implement me")
 }
@@ -99,7 +109,7 @@ func (n NumberCollection[T]) GroupBy(f func()) Iterator {
 	panic("implement me")
 }
 
-func (n NumberCollection[T]) SplitAt(i int) (Collection, Collection) {
+func (n NumberCollection[T]) SplitAt(i int) (Collection[T], Collection[T]) {
 	//TODO implement me
 	panic("implement me")
 }
