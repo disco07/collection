@@ -1,12 +1,12 @@
 package main
 
 import (
-	"collections"
+	"collection"
 	"log"
 )
 
 func main() {
 	var arr = []float64{1, 2, 2, 2, 2}
-	avg := collections.Collect(arr).Dedup().Avg()
+	avg := collection.NewVec(arr).Dedup().Avg()
 	log.Println(avg)
 }

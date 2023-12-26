@@ -1,14 +1,10 @@
-package collections
+package collection
 
-import (
-	"reflect"
-)
+import "collection/cmp"
 
 type Collection[T any] interface {
-	Value() any
-
-	// All returns the underlying array represented by the value.
-	All() []any
+	// ToVec returns a Slice containing all the elements of this Collection.
+	ToVec() []T
 
 	// IsEmpty returns true if the value is empty; otherwise, false is returned.
 	IsEmpty() bool
@@ -23,28 +19,25 @@ type Collection[T any] interface {
 	Clear() Collection[T]
 
 	// Dedup Removes consecutive repeated elements in the value
-	Dedup() Collection[T]
+	Dedup(cmp cmp.Compare[T]) Collection[T]
 
 	// ExtractIf Creates an iterator which uses a closure to determine if an element should be removed
-	ExtractIf(fn func()) Collection[T]
-
-	// Flatten Takes a [[T; N]], and flattens it to a [T].
-	Flatten() Collection[T]
+	ExtractIf(fn func(T) bool) Collection[T]
 
 	// First Returns the first element of the slice, or nil if it is empty.
-	First() any
+	First() T
 
 	// SplitFirst Returns the first and all the rest of the elements of the slice, or nil if it is empty.
-	SplitFirst() (any, Collection[T])
+	SplitFirst() (T, Collection[T])
 
 	// SplitLast Returns the last and all the rest of the elements of the slice, or nil if it is empty.
-	SplitLast() (any, Collection[T])
+	SplitLast() (T, Collection[T])
 
 	// Last Returns the last element of the slice, or nil if it is empty.
-	Last() any
+	Last() T
 
 	// Get Returns a reference to an element or subslice depending on the type of index, or nil if it is empty.
-	Get(int) any
+	Get(int) T
 
 	// Swap Swaps two elements in the slice by index.
 	Swap(int, int) Collection[T]
@@ -60,29 +53,29 @@ type Collection[T any] interface {
 	Windows() Iterator
 
 	// GroupBy Returns an iterator over the slice producing non-overlapping runs of elements using the predicate to separate them.
-	GroupBy(func()) Iterator
+	GroupBy(fn func() bool) Iterator
 
 	// SplitAt Divides one slice into two at an index.
 	SplitAt(int) (Collection[T], Collection[T])
 
 	// Split Returns an iterator over subslices separated by elements that match pred. The matched element is not contained in the subslices.
-	Split(func()) Split
+	Split(fn func() bool) Split
 
 	// SplitInclusive Returns an iterator over subslices separated by elements that match pred.
 	// The matched element is contained in the end of the previous subslice as a terminator.
-	SplitInclusive(func()) Split
+	SplitInclusive(fn func() bool) Split
 
 	// Avg returns the average value of a given key.
-	Avg(key ...string) any
+	Avg() T
 
 	// Sum returns the sum of all items in the value.
-	Sum(key ...string) any
+	Sum() T
 
 	// Min returns the minimum value of a given key.
-	Min(key ...string) any
+	Min() T
 
 	// Max returns the maximum value of a given key.
-	Max(key ...string) any
+	Max() T
 }
 
 type Iterator interface {
@@ -93,161 +86,8 @@ type Split interface {
 	Next() (any, bool)
 }
 
-func Collect[T any](arr any) Collection[T] {
-	t := reflect.TypeOf(arr)
-	rv := reflect.ValueOf(arr)
-
-	switch t.Kind() {
-	case reflect.Slice:
-		// Pour une slice, déterminer le type des éléments de la slice.
-		elemType := t.Elem().Kind()
-		switch elemType {
-		case reflect.Int:
-			var num = make([]Number[int], rv.Len())
-			for k, v := range arr.([]int) {
-				num[k] = NewNumber(v)
-			}
-			return NumberCollection[int]{
-				value: num,
-			}
-		//case reflect.Int8:
-		//	var num = make([]Number[int8], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]int8) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[int8]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Int16:
-		//	var num = make([]Number[int16], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]int16) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[int16]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Int32:
-		//	var num = make([]Number[int32], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]int32) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[int32]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Int64:
-		//	var num = make([]Number[int64], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]int64) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[int64]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Uint:
-		//	var num = make([]Number[uint], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]uint) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[uint]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Uint8:
-		//	var num = make([]Number[uint8], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]uint8) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[uint8]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Uint16:
-		//	var num = make([]Number[uint16], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]uint16) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[uint16]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Uint32:
-		//	var num = make([]Number[uint32], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]uint32) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[uint32]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Uint64:
-		//	var num = make([]Number[uint64], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]uint64) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[uint64]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Float32:
-		//	var num = make([]Number[float32], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]float32) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[float32]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		//case reflect.Float64:
-		//	var num = make([]Number[float64], rv.Len())
-		//	main := MainCollection{
-		//		collection: arr,
-		//	}
-		//	for k, v := range arr.([]float64) {
-		//		num[k] = NewNumber(v)
-		//	}
-		//	return NumberCollection[float64]{
-		//		MainCollection: main,
-		//		value:          num,
-		//	}
-		default:
-			return nil
-		}
-	case reflect.String:
-		return nil
-	default:
-		return nil
+func NewVec[T any](vec []T) Collection[T] {
+	return &iterator[T]{
+		collection: vec,
 	}
 }

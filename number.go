@@ -1,4 +1,4 @@
-package collections
+package collection
 
 import (
 	"golang.org/x/exp/constraints"
@@ -6,6 +6,15 @@ import (
 
 type Num interface {
 	constraints.Float | constraints.Integer
+}
+
+type NumInterface[T any] interface {
+	Add(other T) T
+	Sub(other T) T
+	Mul(other T) T
+	Div(other T) T
+	GreaterThan(other T) bool
+	LessThan(other T) bool
 }
 
 // Number est une structure générique qui contient une valeur de n'importe quel type numérique.
