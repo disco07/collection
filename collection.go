@@ -56,7 +56,7 @@ type Collection[T any] interface {
 	Windows(i int) Split[T]
 
 	// GroupBy Returns an collector over the slice producing non-overlapping runs of elements using the predicate to separate them.
-	GroupBy(fn func(T) bool) Iterator[T]
+	GroupBy(fn func(T, T) bool) Split[T]
 
 	// SplitAt Divides one slice into two at an index.
 	SplitAt(int) (Collection[T], Collection[T])
@@ -82,7 +82,7 @@ type Collection[T any] interface {
 }
 
 type Iterator[T any] interface {
-	Next() (T, bool)
+	Next() (*T, bool)
 }
 
 type Split[T any] interface {

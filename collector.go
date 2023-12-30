@@ -120,17 +120,15 @@ func (c collector[T]) Reverse() Collection[T] {
 }
 
 func (c collector[T]) Iter() Iterator[T] {
-	//TODO implement me
-	panic("implement me")
+	return &iterator[T]{slice: c.collection}
 }
 
 func (c collector[T]) Windows(i int) Split[T] {
 	return &windows[T]{slice: c.collection, window: i}
 }
 
-func (c collector[T]) GroupBy(fn func(T) bool) Iterator[T] {
-	//TODO implement me
-	panic("implement me")
+func (c collector[T]) GroupBy(fn func(T, T) bool) Split[T] {
+	return &GroupBy[T]{slice: c.collection, comparator: fn}
 }
 
 func (c collector[T]) SplitAt(j int) (Collection[T], Collection[T]) {
