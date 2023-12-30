@@ -200,13 +200,13 @@ func (c collector[T]) Min(cmp cmp.Compare[T]) T {
 		return zero
 	}
 
-	min := c.collection[0]
+	m := c.collection[0]
 	for _, item := range c.collection[1:] {
-		if cmp(item, min) {
-			min = item
+		if cmp(item, m) {
+			m = item
 		}
 	}
-	return min
+	return m
 }
 
 func (c collector[T]) Max(cmp cmp.Compare[T]) T {
@@ -215,11 +215,11 @@ func (c collector[T]) Max(cmp cmp.Compare[T]) T {
 		return zero
 	}
 
-	max := c.collection[0]
+	m := c.collection[0]
 	for _, item := range c.collection[1:] {
-		if cmp(item, max) {
-			max = item
+		if cmp(item, m) {
+			m = item
 		}
 	}
-	return max
+	return m
 }
