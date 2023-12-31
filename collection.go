@@ -94,3 +94,7 @@ func NewVec[T any](vec []T) Collection[T] {
 		collection: vec,
 	}
 }
+
+func NewMap[K comparable, V any](m map[K]V) Collection[KeyVal[K, V]] {
+	return nil
+}
